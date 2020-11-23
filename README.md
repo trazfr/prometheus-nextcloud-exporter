@@ -23,7 +23,7 @@ To run, just `prometheus-nextcloud-exporter config.json`
 
 ## Examples of configuration file
 
-This configuration show:
+This configuration shows:
 
 - A timeout of 20 seconds for each requests (default=`5`)
 - Listens to the port `9092` (default value=`:9091`)
@@ -37,7 +37,7 @@ This configuration show:
 {
     "timeout": 20,
     "nextcloud_url": "https://myuser:mypassword@cloud.example.com",
-    "listen": ":9091"
+    "listen": ":9092"
 }
 ```
 
