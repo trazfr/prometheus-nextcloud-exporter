@@ -11,8 +11,7 @@ This repository has been made to monitor a Nextcloud instance using Prometheus t
 Having a working Golang environment:
 
 ```bash
-go get github.com/trazfr/prometheus-nextcloud-exporter
-go install github.com/trazfr/prometheus-nextcloud-exporter
+go install github.com/trazfr/prometheus-nextcloud-exporter@latest
 ```
 
 ## Use
