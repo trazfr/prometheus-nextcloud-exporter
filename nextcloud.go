@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+	"strconv"
+)
 
 const (
 	nextCloudYes = `"yes"`
@@ -87,9 +91,9 @@ type NextCloudSystem struct {
 }
 
 type NextCloudDatabase struct {
-	Size    int64  `json:"size"`
-	Type    string `json:"type"`
-	Version string `json:"version"`
+	Size    NextCloudIntOrString `json:"size"`
+	Type    string               `json:"type"`
+	Version string               `json:"version"`
 }
 
 type NextCloudPHP struct {
@@ -107,15 +111,6 @@ type NextCloudApps struct {
 
 type NextCloudYesNo bool
 
-func (n NextCloudYesNo) MarshalJSON() ([]byte, error) {
-	switch n {
-	case true:
-		return []byte(nextCloudYes), nil
-	default:
-		return []byte(nextCloudNo), nil
-	}
-}
-
 func (n *NextCloudYesNo) UnmarshalJSON(data []byte) error {
 	var err error
 	switch string(data) {
@@ -127,4 +122,23 @@ func (n *NextCloudYesNo) UnmarshalJSON(data []byte) error {
 		err = fmt.Errorf("cannot unmarshal: %v", data)
 	}
 	return err
+}
+
+type NextCloudIntOrString int64
+
+func (n *NextCloudIntOrString) UnmarshalJSON(data []byte) error {
+	if data[0] != '"' {
+		return json.Unmarshal(data, (*int64)(n))
+	}
+
+	var s string
+	if err := json.Unmarshal(data, &s); err != nil {
+		return err
+	}
+	i, err := strconv.ParseInt(s, 10, 64)
+	if err != nil {
+		return err
+	}
+	*n = NextCloudIntOrString(i)
+	return nil
 }
