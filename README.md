@@ -22,25 +22,28 @@ To run, just `prometheus-nextcloud-exporter config.json`
 
 ## Examples of configuration file
 
-This configuration shows:
+This configuration file sets the exporter:
 
-- A timeout of 20 seconds for each requests (default=`5`)
-- Listens to the port `9092` (default value=`:9091`)
-- A Nextcloud instance
+- With a timeout of 20 seconds for each requests (default=`5`)
+- To Listen to the port `9092` (default value=`:9091`)
+- To connect to a Nextcloud instance:
   - using HTTPS (you may also use `http`)
   - with credentials: user is `myuser` and the password is `mypassword`
   - the server is `cloud.example.com`
   - it is using the default path for the serverinfo plugin: `/ocs/v2.php/apps/serverinfo/api/v1/info`
+  - and pass the 2 parameters `skipApps` and `skipUpdate` set to `false`
 
 ```json
 {
     "timeout": 20,
     "nextcloud_url": "https://myuser:mypassword@cloud.example.com",
+    "skip_apps": false,
+    "skip_update": false,
     "listen": ":9092"
 }
 ```
 
-Another configuration example where the Nextcloud is installed in the path `/mynextcloud`:
+Another example where the Nextcloud is installed in the path `/mynextcloud`:
 
 ```json
 {
@@ -48,7 +51,7 @@ Another configuration example where the Nextcloud is installed in the path `/myn
 }
 ```
 
-Your server may have an exotic configuration and the serverinfo endpoints may be behind another path.  
+Your server may have an exotic configuration and the serverinfo endpoints may be behind another path.
 For instance if you have a reverse proxy which rewrites `/serverinfo` into `/ocs/v2.php/apps/serverinfo/api/v1/info`:
 
 ```json

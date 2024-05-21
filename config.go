@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -17,6 +18,8 @@ type internalConfig struct {
 	TimeoutSeconds          float64 `json:"timeout"`
 	NextcloudURL            string  `json:"nextcloud_url"`
 	AppendDefaultServerInfo bool    `json:"append_default_serverinfo_path"`
+	SkipApps                *bool   `json:"skip_apps"`
+	SkipUpdate              *bool   `json:"skip_update"`
 	Listen                  string  `json:"listen"`
 }
 
@@ -51,6 +54,16 @@ func NewConfig(filename string) *Config {
 			infoURL.Path += "/"
 		}
 		infoURL.Path += defaultServerInfoPath
+	}
+	if config.SkipApps != nil || config.SkipUpdate != nil {
+		query := infoURL.Query()
+		if config.SkipApps != nil {
+			query.Set("skipApps", strconv.FormatBool(*config.SkipApps))
+		}
+		if config.SkipUpdate != nil {
+			query.Set("skipUpdate", strconv.FormatBool(*config.SkipUpdate))
+		}
+		infoURL.RawQuery = query.Encode()
 	}
 
 	return &Config{

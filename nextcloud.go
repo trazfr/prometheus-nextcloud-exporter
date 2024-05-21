@@ -72,22 +72,23 @@ type NextCloudStorage struct {
 }
 
 type NextCloudSystem struct {
-	Apps                NextCloudApps  `json:"apps"`
-	CPULoad             []float64      `json:"cpuload"`
-	Debug               NextCloudYesNo `json:"debug"`
-	EnableAvatars       NextCloudYesNo `json:"enable_avatars"`
-	EnablePreviews      NextCloudYesNo `json:"enable_previews"`
-	FilelockingEnabled  NextCloudYesNo `json:"filelocking.enabled"`
-	FreeSpace           int64          `json:"freespace"`
-	MemFree             int64          `json:"mem_free"`
-	MemTotal            int64          `json:"mem_total"`
-	MemcacheDistributed string         `json:"memcache.distributed"`
-	MemcacheLocal       string         `json:"memcache.local"`
-	MemcacheLocking     string         `json:"memcache.locking"`
-	SwapFree            int64          `json:"swap_free"`
-	SwapTotal           int64          `json:"swap_total"`
-	Theme               string         `json:"theme"`
-	Version             string         `json:"version"`
+	Apps                *NextCloudApps   `json:"apps"`
+	CPULoad             []float64        `json:"cpuload"`
+	Debug               NextCloudYesNo   `json:"debug"`
+	EnableAvatars       NextCloudYesNo   `json:"enable_avatars"`
+	EnablePreviews      NextCloudYesNo   `json:"enable_previews"`
+	FilelockingEnabled  NextCloudYesNo   `json:"filelocking.enabled"`
+	FreeSpace           int64            `json:"freespace"`
+	MemFree             int64            `json:"mem_free"`
+	MemTotal            int64            `json:"mem_total"`
+	MemcacheDistributed string           `json:"memcache.distributed"`
+	MemcacheLocal       string           `json:"memcache.local"`
+	MemcacheLocking     string           `json:"memcache.locking"`
+	SwapFree            int64            `json:"swap_free"`
+	SwapTotal           int64            `json:"swap_total"`
+	Theme               string           `json:"theme"`
+	Update              *NextcloudUpdate `json:"update"`
+	Version             string           `json:"version"`
 }
 
 type NextCloudDatabase struct {
@@ -107,6 +108,11 @@ type NextCloudApps struct {
 	//AppUpdates          map[string]string `json:"app_updates"`
 	NumInstalled        int `json:"num_installed"`
 	NumUpdatesAvailable int `json:"num_updates_available"`
+}
+
+type NextcloudUpdate struct {
+	Available      bool  `json:"available"`
+	LastUpdateDate int64 `json:"lastupdatedat"`
 }
 
 type NextCloudYesNo bool

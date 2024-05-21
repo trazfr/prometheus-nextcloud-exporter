@@ -27,6 +27,10 @@ var (
 		namespace+"_num_apps",
 		"Number applications installed and with update available.",
 		[]string{"status"}, nil)
+	promDescUpdate = prometheus.NewDesc(
+		namespace+"_update",
+		"Update available.",
+		nil, nil)
 	promDescNumUsers = prometheus.NewDesc(
 		namespace+"_num_users_total",
 		"Number of users on the instance.",
@@ -108,6 +112,7 @@ func NewCollector(infoURL url.URL, client *http.Client) Collector {
 func (c *Collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- promDescSystemInfo
 	ch <- promDescApps
+	ch <- promDescUpdate
 	ch <- promDescNumUsers
 	ch <- promDescNumFiles
 	ch <- promDescNumStorages
@@ -167,12 +172,18 @@ func (c *Collector) collectMetrics(nextcloud *NextCloudRoot, ch chan<- prometheu
 		data.Server.Database.Type,
 		data.Server.Database.Version)
 
-	ch <- prometheus.MustNewConstMetric(promDescApps, prometheus.GaugeValue,
-		float64(data.Nextcloud.System.Apps.NumInstalled),
-		"installed")
-	ch <- prometheus.MustNewConstMetric(promDescApps, prometheus.GaugeValue,
-		float64(data.Nextcloud.System.Apps.NumUpdatesAvailable),
-		"updates_available")
+	if data.Nextcloud.System.Apps != nil {
+		ch <- prometheus.MustNewConstMetric(promDescApps, prometheus.GaugeValue,
+			float64(data.Nextcloud.System.Apps.NumInstalled),
+			"installed")
+		ch <- prometheus.MustNewConstMetric(promDescApps, prometheus.GaugeValue,
+			float64(data.Nextcloud.System.Apps.NumUpdatesAvailable),
+			"updates_available")
+	}
+	if data.Nextcloud.System.Update != nil {
+		ch <- prometheus.MustNewConstMetric(promDescUpdate, prometheus.GaugeValue,
+			boolToFloat(data.Nextcloud.System.Update.Available))
+	}
 	ch <- prometheus.MustNewConstMetric(promDescNumUsers, prometheus.GaugeValue,
 		float64(data.ActiveUsers.Last5Minutes),
 		"active")
@@ -224,4 +235,11 @@ func (c *Collector) collectMetrics(nextcloud *NextCloudRoot, ch chan<- prometheu
 		float64(data.Server.PHP.UploadMaxFileSize))
 	ch <- prometheus.MustNewConstMetric(promDescDatabaseSize, prometheus.GaugeValue,
 		float64(data.Server.Database.Size))
+}
+
+func boolToFloat(b bool) float64 {
+	if b {
+		return 1
+	}
+	return 0
 }
